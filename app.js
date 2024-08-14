@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
+            console.log(data); // Log the data for debugging
             if (data.error) {
                 weatherInfo.innerHTML = `<p>${data.error}</p>`;
                 forecastInfo.innerHTML = '';
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             weatherInfo.innerHTML = '<p>There was an error fetching the weather data. Please try again later.</p>';
             forecastInfo.innerHTML = '';
+            console.error('Fetch error:', error); // Log the error for debugging
         }
     }
 
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         forecastInfo.innerHTML = data.forecast.map(day => `
             <div class="forecast-day">
                 <h3>${day.date}</h3>
-                <img src="https://${day.icon}" alt="${day.weather}"> <!-- Update this line -->
+                <img src="https:${day.icon}" alt="${day.weather}">
                 <p>Temp: ${day.temperature} °C</p>
                 <p>Humidity: ${day.humidity}%</p>
                 <p>${day.weather}</p>
