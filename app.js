@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         forecastInfo.innerHTML = data.forecast.map(day => `
             <div class="forecast-day">
                 <h3>${day.date}</h3>
-                <img src="http://openweathermap.org/img/wn/${day.icon}.png" alt="${day.weather}">
+                <img src="https://${day.icon}" alt="${day.weather}"> <!-- Update this line -->
                 <p>Temp: ${day.temperature} °C</p>
                 <p>Humidity: ${day.humidity}%</p>
                 <p>${day.weather}</p>

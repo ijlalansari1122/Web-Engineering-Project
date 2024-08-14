@@ -1,57 +1,49 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
-header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1
-header('Pragma: no-cache'); // HTTP 1.0
-header('Expires: 0'); // Proxies
 
 $cityName = isset($_GET['city']) ? $_GET['city'] : '';
-$apiKey = '241993c804a060173c5e0e0cc0e4e6dd';  // Your new OpenWeatherMap API key
+$apiKey = 'ae567eb6f85b41419ea71402241408';  // Your WeatherAPI key
 
 if (empty($cityName)) {
     echo json_encode(['error' => 'City parameter is missing.']);
     exit;
 }
 
-$apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q={$cityName}&appid={$apiKey}&units=metric";
+$apiUrl = "http://api.weatherapi.com/v1/forecast.json?q={$cityName}&key={$apiKey}&days=4";
 
-$response = @file_get_contents($apiUrl);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $apiUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$response = curl_exec($ch);
 
-if ($response === FALSE) {
-    echo json_encode(['error' => 'Error fetching data from API.']);
+if (curl_errno($ch)) {
+    echo json_encode(['error' => 'Error fetching data from API.', 'details' => curl_error($ch)]);
+    curl_close($ch);
     exit;
 }
 
+curl_close($ch);
+
 $data = json_decode($response, true);
 
-if ($data && $data['cod'] == '200') {
-    $city = $data['city']['name'];
+if (isset($data['error'])) {
+    echo json_encode(['error' => $data['error']['message']]);
+} else {
+    $city = $data['location']['name'];
     $forecast = [];
-    foreach ($data['list'] as $entry) {
-        $date = new DateTime($entry['dt_txt']);
-        if ($date->format('H:i:s') === '12:00:00') { // Get the forecast for 12:00 PM each day
-            $forecast[] = [
-                'date' => $date->format('Y-m-d'),
-                'temperature' => $entry['main']['temp'],
-                'humidity' => $entry['main']['humidity'],
-                'weather' => $entry['weather'][0]['description'],
-                'icon' => $entry['weather'][0]['icon']
-            ];
-        }
-        if (count($forecast) === 4) {
-            break; // Stop after getting 4 days of data
-        }
+    foreach ($data['forecast']['forecastday'] as $day) {
+        $forecast[] = [
+            'date' => $day['date'],
+            'temperature' => $day['day']['avgtemp_c'],
+            'humidity' => $day['day']['avghumidity'],
+            'weather' => $day['day']['condition']['text'],
+            'icon' => $day['day']['condition']['icon']
+        ];
     }
 
     echo json_encode([
         'city' => $city,
         'forecast' => $forecast
     ]);
-} else {
-    echo json_encode(['error' => 'City not found or API error.']);
 }
 ?>
