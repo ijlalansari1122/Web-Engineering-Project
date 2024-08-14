@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function getWeather(cityName) {
-        const apiUrl = `weather.php?city=${cityName}`;
+        const apiUrl = `./weather.php?city=${cityName}`;  // Relative path to the PHP file
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
