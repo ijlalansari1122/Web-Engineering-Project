@@ -1,29 +1,15 @@
 <?php
-// Enable CORS to allow requests from any origin (or specify your domain instead of *)
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1
+header('Pragma: no-cache'); // HTTP 1.0
+header('Expires: 0'); // Proxies
 
-// Error reporting for debugging (remove in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$cityName = $_GET['city'] ?? '';
-$apiKey = '4ad0b7dddd303c6887ff0cd4aae1e295';  // Your OpenWeatherMap API key
-
-if (empty($cityName)) {
-    echo json_encode(['error' => 'City name is required.']);
-    exit();
-}
+$cityName = $_GET['city'];
+$apiKey = '3e1efd621271c3ba3d46ff1ae0f30862';  // Your new OpenWeatherMap API key
 
 $apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q={$cityName}&appid={$apiKey}&units=metric";
-$response = @file_get_contents($apiUrl);
-
-if ($response === FALSE) {
-    echo json_encode(['error' => 'Failed to fetch weather data.']);
-    exit();
-}
-
+$response = file_get_contents($apiUrl);
 $data = json_decode($response, true);
 
 if ($data && $data['cod'] == '200') {
