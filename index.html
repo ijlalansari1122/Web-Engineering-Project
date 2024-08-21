@@ -3,50 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>GreenGB</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1><i class="fas fa-cloud-sun"></i> Weather App</h1>
+        <div class="logo">
+           <a href="./index.html"> <img src="/images/download__1_-removebg-preview (2).png" alt="GreenGB Logo">
+           </a></div>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#recent-searches">Recent Searches</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="/Climate_change.html">Climate Change</a></li>
+                <li><a href="/disaster_prepare.html">Disaster Preparedness</a></li>
             </ul>
+        
         </nav>
     </header>
-    
-    <main id="home" class="section">
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to GreenGB</h1>
+            <p>Explore Gilgit-Baltistan's efforts in tackling climate change, disaster preparedness, and more.</p>
+            <a href="about.html" class="cta-btn">Learn More</a>
+        </div>
+    </section>
+
+    <section class="intro">
         <div class="container">
-            <h2>Check the Weather</h2>
+            <h2>About Us</h2>
+            <p>GreenGB is dedicated to promoting environmental awareness and sustainability in Gilgit-Baltistan. Our mission is to educate the community about the importance of climate action and to provide resources for disaster preparedness.</p>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            
+            <div class="feature">
+                <h3>Climate Change</h3>
+                <p>Learn about the climate challenges facing Gilgit-Baltistan and how you can contribute to the solution.</p>
+                <a href="/Climate_change.html">Read More</a>
+            </div>
+            <div class="feature">
+                <h3>Disaster Preparedness</h3>
+                <p>Prepare yourself and your community for potential disasters with our comprehensive guides.</p>
+                <a href="/disaster_prepare.html">Read More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="weather-checker">
+        <div class="container">
+            <h2>Check the Weather in Your City</h2>
             <input type="text" id="cityInput" placeholder="Enter city name">
             <button id="getWeatherBtn">Get Weather</button>
             <div id="weatherInfo"></div>
-            <div id="forecastInfo" class="forecast-container"></div> <!-- Container for 4-day forecast -->
-        </div>
-    </main>
-
-    <section id="about" class="section">
-        <div class="container">
-            <h2>About This App</h2>
-            <p>This Weather App allows you to check the current weather conditions of any city in the world. Enter the city name and get real-time data on temperature, humidity, and weather description.</p>
+            <div id="forecastInfo" class="forecast-container"></div>
         </div>
     </section>
+    
 
-    <section id="recent-searches" class="section">
-        <div class="container">
-            <h2>Recent Searches</h2>
-            <ul id="recentSearchesList"></ul>
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-logo">
+            <a href="/index.html"><img src="/images/download__1_-removebg-preview (2).png" alt="GB Climate Initiative Logo">
+            </a>
         </div>
-    </section>
+        <nav class="footer-menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="/Climate_change.html">Climate Change</a></li>
+                <li><a href="/disaster_prepare.html">Disaster Preparedness</a></li>
+            </ul>
+        
+        </nav>
+        <div class="social-links">
+            <p>&copy; 2024 GB Climate Initiative. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
 
-    <footer>
-        <p>&copy; 2024 Weather App. All rights reserved.</p>
-    </footer>
 
-    <script src="app.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>
