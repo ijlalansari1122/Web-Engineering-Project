@@ -1,56 +1,61 @@
 <?php
-header('Content-Type: application/json');
-
-// Enable error reporting for debugging
+// Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Your OpenWeatherMap API key
+$apiKey = "241993c804a060173c5e0e0cc0e4e6dd";
+
+// Get the city name from the query string
 $cityName = isset($_GET['city']) ? $_GET['city'] : '';
-$apiKey = 'ae567eb6f85b41419ea71402241408';  // Your WeatherAPI key
 
-if (empty($cityName)) {
-    echo json_encode(['error' => 'City parameter is missing.']);
-    exit;
-}
+if ($cityName) {
+    // API endpoint with city name and API key
+    $apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" . urlencode($cityName) . "&appid=" . $apiKey . "&units=metric";
 
-$apiUrl = "http://api.weatherapi.com/v1/forecast.json?q={$cityName}&key={$apiKey}&days=4";
+    // Make the API request
+    $response = file_get_contents($apiUrl);
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $apiUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  // Disable SSL verification for troubleshooting
-$response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    $errorMessage = curl_error($ch);
-    echo json_encode(['error' => 'Error fetching data from API.', 'details' => $errorMessage]);
-    curl_close($ch);
-    exit;
-}
-
-curl_close($ch);
-
-$data = json_decode($response, true);
-
-if (isset($data['error'])) {
-    echo json_encode(['error' => $data['error']['message']]);
-} else {
-    $city = $data['location']['name'];
-    $forecast = [];
-    foreach ($data['forecast']['forecastday'] as $day) {
-        $forecast[] = [
-            'date' => $day['date'],
-            'temperature' => $day['day']['avgtemp_c'],
-            'humidity' => $day['day']['avghumidity'],
-            'weather' => $day['day']['condition']['text'],
-            'icon' => $day['day']['condition']['icon']
-        ];
+    if ($response === FALSE) {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to connect to the API.']);
+        exit;
     }
 
-    echo json_encode([
-        'city' => $city,
-        'forecast' => $forecast
-    ]);
+    // Decode the JSON response
+    $weatherData = json_decode($response, true);
+
+    // Log the raw response for debugging
+    error_log("API Response: " . print_r($weatherData, true));
+
+    // Check if the API response contains weather data
+    if ($weatherData['cod'] == 200) {
+        $temp = $weatherData['main']['temp'];
+        $humidity = $weatherData['main']['humidity'];
+        $description = ucfirst($weatherData['weather'][0]['description']);
+        $windSpeed = $weatherData['wind']['speed'];
+        $icon = $weatherData['weather'][0]['icon'];
+
+        // Create an array with the data to return
+        $data = array(
+            'status' => 'success',
+            'city' => $cityName,
+            'temperature' => $temp,
+            'humidity' => $humidity,
+            'description' => $description,
+            'windSpeed' => $windSpeed,
+            'icon' => $icon
+        );
+    } else {
+        // If the city is not found or another error occurred
+        $data = array('status' => 'error', 'message' => $weatherData['message']);
+    }
+} else {
+    // If no city name was provided
+    $data = array('status' => 'error', 'message' => 'Please provide a city name.');
 }
+
+// Return the data as JSON
+header('Content-Type: application/json');
+echo json_encode($data);
 ?>
